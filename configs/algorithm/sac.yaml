@@ -1,0 +1,23 @@
+# @package algorithm
+_target_: src.algorithms.sac.SACTrainer
+
+# Training configuration
+learning_rate: 3e-4
+gamma: 0.99
+tau: 0.005
+alpha: 0.2
+auto_entropy: true
+target_entropy: null  # Will be set automatically
+
+# Network architecture
+hidden_dim: 256
+num_layers: 2
+
+# Replay buffer
+buffer_size: 100000
+
+# Training settings
+total_timesteps: 100000
+eval_freq: 5000
+save_freq: 10000
+batch_size: 256

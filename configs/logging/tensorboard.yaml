@@ -1,0 +1,22 @@
+# @package logging
+_target_: src.utils.logging.TensorBoardLogger
+
+# Logging settings
+log_dir: ${assets_dir}/logs/${experiment_name}/${run_id}
+log_frequency: 100
+save_model: true
+save_frequency: 10000
+
+# Metrics to log
+log_metrics:
+  - episode_reward
+  - episode_length
+  - success_rate
+  - completion_rate
+  - policy_loss
+  - value_loss
+  - entropy_loss
+
+# Visualization settings
+plot_frequency: 1000
+save_plots: true

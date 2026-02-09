@@ -1,0 +1,45 @@
+# @package _global_
+defaults:
+  - override /algorithm: ppo
+  - override /env: dialogue_env
+  - override /logging: tensorboard
+
+# Global settings
+seed: 42
+device: auto
+deterministic: true
+
+# Paths
+project_root: ${oc.env:PROJECT_ROOT,.}
+data_dir: ${project_root}/data
+assets_dir: ${project_root}/assets
+checkpoints_dir: ${assets_dir}/checkpoints
+logs_dir: ${assets_dir}/logs
+plots_dir: ${assets_dir}/plots
+
+# Experiment settings
+experiment_name: dialogue_rl_experiment
+run_id: ${now:%Y%m%d_%H%M%S}
+tags: [dialogue, rl, policy_learning]
+
+# Safety and reproducibility
+max_episode_steps: 1000
+max_total_timesteps: 100000
+eval_frequency: 5000
+save_frequency: 10000
+
+# Safety disclaimers
+safety_warning: |
+  WARNING: This is a research/educational project for dialogue policy learning.
+  NOT FOR PRODUCTION CONTROL OF REAL SYSTEMS.
+  
+  This system is designed for:
+  - Research and educational purposes
+  - Demonstrating RL concepts in dialogue systems
+  - Academic study of conversation policies
+  
+  DO NOT USE for:
+  - Production dialogue systems
+  - Real-world customer service
+  - Critical decision-making systems
+  - Systems requiring guaranteed safety or reliability

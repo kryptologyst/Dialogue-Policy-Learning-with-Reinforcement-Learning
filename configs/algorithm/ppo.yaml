@@ -1,0 +1,22 @@
+# @package algorithm
+_target_: src.algorithms.ppo.PPOTrainer
+
+# Training configuration
+learning_rate: 3e-4
+gamma: 0.99
+gae_lambda: 0.95
+clip_ratio: 0.2
+value_loss_coef: 0.5
+entropy_coef: 0.01
+max_grad_norm: 0.5
+num_epochs: 4
+batch_size: 64
+
+# Network architecture
+hidden_dim: 256
+num_layers: 2
+
+# Training settings
+total_timesteps: 100000
+eval_freq: 5000
+save_freq: 10000

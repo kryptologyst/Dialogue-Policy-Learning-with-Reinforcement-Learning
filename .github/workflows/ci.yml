@@ -1,0 +1,103 @@
+# GitHub Actions workflow for CI/CD
+
+name: CI/CD Pipeline
+
+on:
+  push:
+    branches: [ main, develop ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  lint:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v4
+    
+    - name: Set up Python
+      uses: actions/setup-python@v4
+      with:
+        python-version: '3.10'
+    
+    - name: Install dependencies
+      run: |
+        python -m pip install --upgrade pip
+        pip install -r requirements.txt
+        pip install black ruff mypy pytest
+    
+    - name: Run black
+      run: black --check src/ scripts/ tests/
+    
+    - name: Run ruff
+      run: ruff check src/ scripts/ tests/
+    
+    - name: Run mypy
+      run: mypy src/ --ignore-missing-imports
+
+  test:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        python-version: ['3.10', '3.11']
+    
+    steps:
+    - uses: actions/checkout@v4
+    
+    - name: Set up Python ${{ matrix.python-version }}
+      uses: actions/setup-python@v4
+      with:
+        python-version: ${{ matrix.python-version }}
+    
+    - name: Install dependencies
+      run: |
+        python -m pip install --upgrade pip
+        pip install -r requirements.txt
+        pip install pytest pytest-cov
+    
+    - name: Run tests
+      run: |
+        pytest tests/ --cov=src --cov-report=xml --cov-report=html
+    
+    - name: Upload coverage to Codecov
+      uses: codecov/codecov-action@v3
+      with:
+        file: ./coverage.xml
+        flags: unittests
+        name: codecov-umbrella
+
+  demo-test:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v4
+    
+    - name: Set up Python
+      uses: actions/setup-python@v4
+      with:
+        python-version: '3.10'
+    
+    - name: Install dependencies
+      run: |
+        python -m pip install --upgrade pip
+        pip install -r requirements.txt
+        pip install streamlit
+    
+    - name: Test demo import
+      run: |
+        python -c "import sys; sys.path.append('src'); from demo.app import *; print('Demo imports successfully')"
+    
+    - name: Test basic training
+      run: |
+        python -c "
+        import sys
+        sys.path.append('src')
+        from src.envs import make_dialogue_env
+        from src.algorithms import PolicyGradientTrainer, TrainingConfig
+        
+        env = make_dialogue_env(seed=42)
+        config = TrainingConfig()
+        trainer = PolicyGradientTrainer(env, config)
+        
+        # Run one episode
+        metrics = trainer.train_episode()
+        print(f'Training completed: {metrics}')
+        "
